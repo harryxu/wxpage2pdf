@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// Modified from https://gist.github.com/glenhallworthreadify/d447e9d6b1fc9cb807b46f952236d4bc
+
 const puppeteer = require('puppeteer');
 
 class Webpage {
@@ -27,7 +29,9 @@ class Webpage {
         };
 
 
-        // https://stackoverflow.com/a/49233383/157811
+        // 由于微信公众号页面中的图片使用了lazyload，所以这边需要将所有图片的src设置为其data-src值，
+        // 并且等所有图片都加载完成后在继续。
+        // 参考: https://stackoverflow.com/a/49233383/157811
         await page.evaluate(async () => {
             const selectors = Array.from(document.querySelectorAll("img"));
 
@@ -45,7 +49,6 @@ class Webpage {
               });
             }));
           })
-
 
         await page.emulateMedia('screen');
         const pdf = await page.pdf(pdfConfig); // Return the pdf buffer. Useful for saving the file not to disk.
